@@ -28,12 +28,18 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen w-full">
-      <nav className="flex justify-between items-center px-4 py-6 shadow-md">
-        <h1 className="font-extrabold text-3xl">Homepage</h1>
-        {loggedUser && <div>Welcome, {loggedUser}</div>}
-      </nav>
-      <Sider loggedUser={loggedUser} hanldeOpenLogin={hanldeOpenLogin} />
+    <>
+      <main className="min-h-screen w-full">
+        <nav className="flex justify-between items-center px-4 py-6 shadow-md">
+          <h1 className="font-extrabold text-3xl">Homepage</h1>
+          {loggedUser ? (
+            <div>Welcome, {loggedUser}</div>
+          ) : (
+            <button onClick={hanldeOpenLogin}>Sign in</button>
+          )}
+        </nav>
+        <Sider loggedUser={loggedUser} hanldeOpenLogin={hanldeOpenLogin} />
+      </main>
       {loginIsVisible && (
         <>
           <Mask />
@@ -43,6 +49,6 @@ export default function Home() {
           />
         </>
       )}
-    </main>
+    </>
   )
 }
