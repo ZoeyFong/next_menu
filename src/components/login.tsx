@@ -8,19 +8,17 @@ import {
 } from "@/config/login-field"
 import { debounce } from "@/utils/debounce"
 
-export default function Login({
-  setLoginVisible,
-}: {
-  setLoginVisible: (v: boolean) => void
-}) {
-  const [formData, setFormData] = useState<TFormFields>(defaultFieldsVal)
+type Props = {
+  hanldeCloseLogin: () => void
+  handleLoggedIn: (user: string) => void
+}
 
-  const closeLogin = () => setLoginVisible(false)
+export default function Login({ hanldeCloseLogin, handleLoggedIn }: Props) {
+  const [formData, setFormData] = useState<TFormFields>(defaultFieldsVal)
+  const loginDisabled = !formData.password || !formData.username
 
   const onSubmitForm = async (e: FormEvent) => {
     e.preventDefault()
-    const { username, password } = formData
-    if (!username || !password) return alert("last name or first name is empty")
 
     fetch("/api/login", {
       method: "POST",
@@ -32,7 +30,7 @@ export default function Login({
       .then((res) => res.json())
       .then((data) => {
         if (data.code !== 200) throw data.message
-        closeLogin()
+        handleLoggedIn(formData.username)
       })
       .catch((err) => alert(err))
   }
@@ -43,8 +41,8 @@ export default function Login({
   })
 
   useEffect(() => {
-    const escLister = (e: { key: string }) => {
-      if (e.key === "Escape") closeLogin()
+    const escLister = (e: KeyboardEvent) => {
+      if (e.key === "Escape") hanldeCloseLogin()
     }
     document.addEventListener("keydown", escLister)
     return () => {
@@ -77,13 +75,14 @@ export default function Login({
         <div className="mt-6 flex-col font-bold space-y-5 text-center">
           <button
             type="submit"
-            className="rounded-md px-8 py-2 border-[1px] bg-slate-800 dark:bg-slate-50 text-slate-50 dark:text-slate-800 cursor-pointer"
+            disabled={loginDisabled}
+            className="w-full rounded-md px-8 py-2 border-[1px] bg-slate-800 dark:bg-slate-50 text-slate-50 dark:text-slate-800 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:dark:bg-slate-300"
           >
             Login
           </button>
           <button
-            onClick={closeLogin}
-            className="rounded-md px-8 py-2 border-[1px] cursor-pointer"
+            onClick={hanldeCloseLogin}
+            className="w-full rounded-md px-8 py-2 border-[1px]"
           >
             Cancel
           </button>

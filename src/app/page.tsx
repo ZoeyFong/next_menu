@@ -1,38 +1,77 @@
 "use client"
 
-import { useState } from "react"
+import { ReactNode, useMemo, useState } from "react"
 import dynamic from "next/dynamic"
 import Loading from "@/components/loading"
 import Mask from "@/components/mask"
+import menuConfig from "./menu.json"
+import Link from "next/link"
 
 const Login = dynamic(() => import("../components/login"), {
   loading: () => <Loading />,
 })
 
-export default function Home() {
-  const [loginIsVisible, setLoginVisible] = useState<boolean>(false)
+type TMenu = {
+  label: string
+  key: string
+  level: number
+  children: TMenu[]
+}
 
-  const handleClickMenuArea = () => {
-    setLoginVisible(true)
+export default function Home() {
+  const [loginIsVisible, setLoginVisible] = useState(false)
+  const [loggedUser, setLoggedUser] = useState<null | string>(null)
+
+  const hanldeCloseLogin = () => {
+    setLoginVisible(false)
+  }
+
+  const handleLoggedIn = (user: string) => {
+    setLoggedUser(user)
+    hanldeCloseLogin()
+  }
+
+  const renderMenu = (menus: TMenu[]): ReactNode[] => {
+    return menus.map((menu) => {
+      const { key, label, children } = menu
+      return (
+        <div className="cursor-pointer ml-4 space-y-3" key={key}>
+          <Link href={`#${key}`}>
+            <span
+              className="block hover:text-amber-500 active:font-bold"
+              onClick={handleClickMenu}
+            >
+              {label}
+            </span>
+          </Link>
+          {!!children.length && renderMenu(children)}
+        </div>
+      )
+    })
+  }
+
+  const handleClickMenu = () => {
+    if (!loggedUser) {
+      setLoginVisible(true)
+    }
   }
 
   return (
-    <main className="flex min-h-screen w-full sm:w-3xl md:w-4xl m-auto p-4 flex flex-col align-center">
-      <h1 className="font-extrabold text-3xl mb-6">Homepage</h1>
-      <section
-        className="w-full space-y-8 border-gray-300 py-8 px-4 rounded-md shadow-md bg-slate-50 dark:bg-slate-800"
-        onClick={handleClickMenuArea}
-      >
-        {new Array(3).fill("").map((_, i) => (
-          <div className="cursor-pointer hover:text-slate-300" key={i}>
-            Menu Button {i + 1}
-          </div>
-        ))}
+    <main className="min-h-screen w-full">
+      <nav className="flex justify-between items-center px-4 py-6 shadow-md">
+        <h1 className="font-extrabold text-3xl">Homepage</h1>
+        {loggedUser && <div>Welcome, {loggedUser}</div>}
+      </nav>
+      <section className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
+        {renderMenu(menuConfig.children)}
       </section>
       {loginIsVisible && (
         <>
           <Mask />
-          <Login setLoginVisible={setLoginVisible} />
+          <Login
+            hanldeCloseLogin={hanldeCloseLogin}
+            handleLoggedIn={handleLoggedIn}
+          />
         </>
       )}
     </main>
