@@ -2,6 +2,7 @@
   "name": "menu",
   "version": "0.1.0",
   "private": true,
+  "author": "zoey_fong@foxmail.com",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
