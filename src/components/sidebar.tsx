@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import menuConfig from "@/app/menu.json"
+import ArrowRight from "public/images/arrow-right.svg"
 
 type MenuKey = string
 
@@ -39,7 +40,7 @@ export default function Sidebar({ loggedUser, handleOpenLogin }: SidebarProps) {
   )
 
   return (
-    <section className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
+    <aside className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
       {menuConfig.children.map((menu) => (
         <MenuItem
           commonClickPass={commonClickPass}
@@ -48,15 +49,28 @@ export default function Sidebar({ loggedUser, handleOpenLogin }: SidebarProps) {
           menu={menu}
         />
       ))}
-    </section>
+    </aside>
   )
 }
 
 type MenuProps = {
   menu: Menu
-  commonClickPass: (key: MenuKey) => boolean
-  isActiveRoute: (key: MenuKey) => boolean
-  defaultToggled?: boolean
+  commonClickPass?: (key: MenuKey) => boolean // pre-requisites for clicking menu items
+  isActiveRoute?: (key: MenuKey) => boolean // manage active route state in upper component
+  defaultToggled?: boolean // set a group of menu toggled by default
+  icon?: ReactNode // set a icon for toggling
+  itemClassname?: string // extra classnames for menu items
+  /**
+   * @see reusable
+   * other possible properties to exposed in menu
+   * e.g. direction, setToggled, onClickCallback, ...
+   * but we always have to balance the maintainability with flexibility
+   */
+}
+
+const defaultRequiredMenuProps: Pick<MenuProps, "icon" | "itemClassname"> = {
+  icon: <ArrowRight />,
+  itemClassname: "",
 }
 
 export const MenuItem = ({
@@ -64,27 +78,32 @@ export const MenuItem = ({
   commonClickPass,
   isActiveRoute,
   defaultToggled,
+  ...props
 }: MenuProps) => {
   const [toggled, setToggled] = useState(!!defaultToggled)
+  const {
+    icon = defaultRequiredMenuProps.icon,
+    itemClassname = defaultRequiredMenuProps.itemClassname,
+  } = props
 
   const handleClickMenu = useCallback(
     (key: MenuKey) => {
-      const valid = commonClickPass(key)
+      const valid = commonClickPass ? commonClickPass(key) : true
       if (valid) setToggled((t) => !t)
     },
     [commonClickPass]
   )
 
-  const getPrefix = (isActive: boolean, children: Menu[]) => {
+  const getPrefix = () => {
     return (
       <div className="w-6">
         {!children.length ? null : (
           <span
-            className={`inline-block transform transition opacity-40 ${
-              isActive ? "rotate-90 bold" : ""
+            className={`inline-block transform transition-transform ${
+              toggled ? "rotate-90" : ""
             }`}
           >
-            {">"}
+            {icon}
           </span>
         )}
       </div>
@@ -99,6 +118,9 @@ export const MenuItem = ({
         menu={child}
         key={child.key}
         isActiveRoute={isActiveRoute}
+        defaultToggled={defaultToggled}
+        icon={icon}
+        itemClassname={itemClassname}
       />
     ))
   }
@@ -106,13 +128,13 @@ export const MenuItem = ({
   return (
     <div className="text-lg cursor-pointer ml-4 mr-2 space-y-3" key={key}>
       <div
-        className={`flex justify-start w-fit hover:text-amber-500 ${
-          isActiveRoute(key) ? "font-extrabold" : ""
-        }`}
+        className={`flex justify-start w-fit hover:text-amber-500 hover:fill-amber-500 ${
+          isActiveRoute?.(key) ? "font-extrabold" : ""
+        } ${itemClassname}`}
         data-testid="menu-item"
         onClick={() => handleClickMenu(key)}
       >
-        {getPrefix(toggled, children)}
+        {getPrefix()}
         <div>{label}</div>
       </div>
       {renderChildren()}
