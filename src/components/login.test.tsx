@@ -17,7 +17,7 @@ describe("test single login component", () => {
 
   const setup = () => {
     const voidFn = jest.fn()
-    render(<Login hanldeCloseLogin={voidFn} handleLoggedIn={voidFn} />)
+    render(<Login handleCloseLogin={voidFn} handleLoggedIn={voidFn} />)
     passwordInput = screen.getByPlaceholderText("Please enter your password")
     usernameInput = screen.getByPlaceholderText("Please enter your username")
     submitBtn = screen.getByText("Submit")
@@ -75,7 +75,7 @@ describe("test login interactions in homepage", () => {
     }
     const voidFn = jest.fn()
     render(
-      <Login hanldeCloseLogin={handleCloseLogin} handleLoggedIn={voidFn} />
+      <Login handleCloseLogin={handleCloseLogin} handleLoggedIn={voidFn} />
     )
     fireEvent.click(screen.getByText("Cancel"))
     expect(closed).toBe(true)

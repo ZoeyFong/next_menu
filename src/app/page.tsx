@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 import dynamic from "next/dynamic"
 import Loading from "@/components/loading"
 import Mask from "@/components/mask"
-import Sider from "@/components/sider"
+import Sidebar from "@/components/sidebar"
 
 const Login = dynamic(() => import("../components/login"), {
   loading: () => <Loading />,
@@ -14,17 +14,17 @@ export default function Home() {
   const [loginIsVisible, setLoginVisible] = useState(false)
   const [loggedUser, setLoggedUser] = useState<null | string>(null)
 
-  const hanldeCloseLogin = useCallback(() => {
+  const handleCloseLogin = useCallback(() => {
     setLoginVisible(false)
   }, [])
 
-  const hanldeOpenLogin = () => {
+  const handleOpenLogin = () => {
     setLoginVisible(true)
   }
 
   const handleLoggedIn = (user: string) => {
     setLoggedUser(user)
-    hanldeCloseLogin()
+    handleCloseLogin()
   }
 
   return (
@@ -35,16 +35,16 @@ export default function Home() {
           {loggedUser ? (
             <div>Welcome, {loggedUser}</div>
           ) : (
-            <button onClick={hanldeOpenLogin}>Sign in</button>
+            <button onClick={handleOpenLogin}>Sign in</button>
           )}
         </nav>
-        <Sider loggedUser={loggedUser} hanldeOpenLogin={hanldeOpenLogin} />
+        <Sidebar loggedUser={loggedUser} handleOpenLogin={handleOpenLogin} />
       </main>
       {loginIsVisible && (
         <>
           <Mask />
           <Login
-            hanldeCloseLogin={hanldeCloseLogin}
+            handleCloseLogin={handleCloseLogin}
             handleLoggedIn={handleLoggedIn}
           />
         </>

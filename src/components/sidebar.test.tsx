@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom"
 import * as React from "react"
 import { render, fireEvent, screen } from "@testing-library/react"
-import Sider, { MenuItem } from "./sider"
+import Sidebar, { MenuItem } from "./sidebar"
 
 describe("test sider", () => {
   test("shows the login form when a menu item is clicked", async () => {
@@ -9,7 +9,7 @@ describe("test sider", () => {
     const handleOpenLogin = () => {
       triggered = true
     }
-    render(<Sider loggedUser={null} hanldeOpenLogin={handleOpenLogin} />)
+    render(<Sidebar loggedUser={null} handleOpenLogin={handleOpenLogin} />)
 
     const menuItems = screen.getAllByTestId("menu-item")
     const len = menuItems.length

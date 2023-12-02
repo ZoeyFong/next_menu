@@ -4,11 +4,11 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { debounce } from "@/utils/debounce"
 
 type Props = {
-  hanldeCloseLogin: () => void
+  handleCloseLogin: () => void
   handleLoggedIn: (user: string) => void
 }
 
-export default function Login({ hanldeCloseLogin, handleLoggedIn }: Props) {
+export default function Login({ handleCloseLogin, handleLoggedIn }: Props) {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -42,13 +42,13 @@ export default function Login({ hanldeCloseLogin, handleLoggedIn }: Props) {
 
   useEffect(() => {
     const escLister = (e: KeyboardEvent) => {
-      if (e.key === "Escape") hanldeCloseLogin()
+      if (e.key === "Escape") handleCloseLogin()
     }
     document.addEventListener("keydown", escLister)
     return () => {
       document.removeEventListener("keydown", escLister)
     }
-  }, [hanldeCloseLogin])
+  }, [handleCloseLogin])
 
   const formFields = [
     {
@@ -98,7 +98,7 @@ export default function Login({ hanldeCloseLogin, handleLoggedIn }: Props) {
             Submit
           </button>
           <button
-            onClick={hanldeCloseLogin}
+            onClick={handleCloseLogin}
             className="w-full rounded-md px-8 py-2 border-[1px]"
           >
             Cancel

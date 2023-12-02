@@ -11,24 +11,24 @@ type Menu = {
   children: Menu[]
 }
 
-type SiderProps = {
+type SidebarProps = {
   loggedUser: null | string
-  hanldeOpenLogin: () => void
+  handleOpenLogin: () => void
 }
 
-export default function Sider({ loggedUser, hanldeOpenLogin }: SiderProps) {
+export default function Sidebar({ loggedUser, handleOpenLogin }: SidebarProps) {
   const [routePath, setRoutePath] = useState<string>("")
 
   const commonClickPass = useCallback(
     (key: MenuKey) => {
       if (!loggedUser) {
-        hanldeOpenLogin()
+        handleOpenLogin()
         return false
       }
       setRoutePath(key)
       return true
     },
-    [loggedUser, hanldeOpenLogin]
+    [loggedUser, handleOpenLogin]
   )
 
   const isActiveRoute = useCallback(
