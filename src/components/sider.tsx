@@ -2,14 +2,12 @@
 
 import { useCallback, useState } from "react"
 import menuConfig from "@/app/menu.json"
-import { useRouter } from "next/navigation"
 
 type MenuKey = string
 
 type Menu = {
   label: string
   key: MenuKey
-  level: number
   children: Menu[]
 }
 
@@ -19,17 +17,16 @@ type SiderProps = {
 }
 
 export default function Sider({ loggedUser, hanldeOpenLogin }: SiderProps) {
-  const router = useRouter()
   const [routePath, setRoutePath] = useState<string>("")
 
-  const handleCommonClick = useCallback(
+  const commonClickPass = useCallback(
     (key: MenuKey) => {
       if (!loggedUser) {
         hanldeOpenLogin()
-        return
+        return false
       }
       setRoutePath(key)
-      router.push(`#${key}`)
+      return true
     },
     [loggedUser, hanldeOpenLogin]
   )
@@ -45,7 +42,7 @@ export default function Sider({ loggedUser, hanldeOpenLogin }: SiderProps) {
     <section className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
       {menuConfig.children.map((menu) => (
         <MenuItem
-          handleCommonClick={handleCommonClick}
+          commonClickPass={commonClickPass}
           isActiveRoute={isActiveRoute}
           key={menu.key}
           menu={menu}
@@ -57,23 +54,25 @@ export default function Sider({ loggedUser, hanldeOpenLogin }: SiderProps) {
 
 type MenuProps = {
   menu: Menu
-  handleCommonClick: (key: MenuKey) => void
+  commonClickPass: (key: MenuKey) => boolean
   isActiveRoute: (key: MenuKey) => boolean
+  defaultToggled?: boolean
 }
 
-const MenuItem = ({
-  menu: { key, children, label, level },
-  handleCommonClick,
+export const MenuItem = ({
+  menu: { key, children, label },
+  commonClickPass,
   isActiveRoute,
+  defaultToggled,
 }: MenuProps) => {
-  const [toggled, setToggled] = useState<boolean>(level === 1)
+  const [toggled, setToggled] = useState(!!defaultToggled)
 
   const handleClickMenu = useCallback(
     (key: MenuKey) => {
-      handleCommonClick(key)
-      setToggled((t) => !t)
+      const valid = commonClickPass(key)
+      if (valid) setToggled((t) => !t)
     },
-    [handleCommonClick]
+    [commonClickPass]
   )
 
   const getPrefix = (isActive: boolean, children: Menu[]) => {
@@ -96,7 +95,7 @@ const MenuItem = ({
     if (!toggled || !children.length) return null
     return children.map((child) => (
       <MenuItem
-        handleCommonClick={handleCommonClick}
+        commonClickPass={commonClickPass}
         menu={child}
         key={child.key}
         isActiveRoute={isActiveRoute}
@@ -110,6 +109,7 @@ const MenuItem = ({
         className={`flex justify-start w-fit hover:text-amber-500 ${
           isActiveRoute(key) ? "font-extrabold" : ""
         }`}
+        data-testid="menu-item"
         onClick={() => handleClickMenu(key)}
       >
         {getPrefix(toggled, children)}

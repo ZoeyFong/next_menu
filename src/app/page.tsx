@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import dynamic from "next/dynamic"
 import Loading from "@/components/loading"
 import Mask from "@/components/mask"
@@ -14,9 +14,9 @@ export default function Home() {
   const [loginIsVisible, setLoginVisible] = useState(false)
   const [loggedUser, setLoggedUser] = useState<null | string>(null)
 
-  const hanldeCloseLogin = () => {
+  const hanldeCloseLogin = useCallback(() => {
     setLoginVisible(false)
-  }
+  }, [])
 
   const hanldeOpenLogin = () => {
     setLoginVisible(true)
