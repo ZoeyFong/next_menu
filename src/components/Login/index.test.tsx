@@ -8,7 +8,7 @@ import {
   cleanup,
 } from "@testing-library/react"
 import fetchMock from "jest-fetch-mock"
-import Login from "./login"
+import Login from "./index"
 import Page from "@/app/page"
 
 describe("test single login component", () => {

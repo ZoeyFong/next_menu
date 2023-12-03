@@ -2,11 +2,11 @@
 
 import { useCallback, useState } from "react"
 import dynamic from "next/dynamic"
-import Loading from "@/components/loading"
-import Mask from "@/components/mask"
-import Sidebar from "@/components/sidebar"
+import Loading from "@/components/Loading"
+import Mask from "@/components/Mask"
+import Sidebar from "@/components/Sidebar"
 
-const Login = dynamic(() => import("../components/login"), {
+const Login = dynamic(() => import("../components/Login"), {
   loading: () => <Loading />,
 })
 

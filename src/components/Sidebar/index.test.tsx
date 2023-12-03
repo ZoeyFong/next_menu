@@ -1,9 +1,10 @@
 import "@testing-library/jest-dom"
 import * as React from "react"
 import { render, fireEvent, screen } from "@testing-library/react"
-import Sidebar, { MenuItem } from "./sidebar"
+import Sidebar from "./index"
+import MenuItem from "./MenuItem"
 
-describe("test sider", () => {
+describe("test sidebar", () => {
   test("shows the login form when a menu item is clicked", async () => {
     let triggered = false
     const handleOpenLogin = () => {

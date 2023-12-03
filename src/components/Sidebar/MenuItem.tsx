@@ -1,56 +1,14 @@
 "use client"
 
 import { ReactNode, useCallback, useState } from "react"
-import menuConfig from "@/app/menu.json"
 import ArrowRight from "public/images/arrow-right.svg"
 
-type MenuKey = string
+export type MenuKey = string
 
 type Menu = {
   label: string
   key: MenuKey
   children: Menu[]
-}
-
-type SidebarProps = {
-  loggedUser: null | string
-  handleOpenLogin: () => void
-}
-
-export default function Sidebar({ loggedUser, handleOpenLogin }: SidebarProps) {
-  const [routePath, setRoutePath] = useState<string>("")
-
-  const commonClickPass = useCallback(
-    (key: MenuKey) => {
-      if (!loggedUser) {
-        handleOpenLogin()
-        return false
-      }
-      setRoutePath(key)
-      return true
-    },
-    [loggedUser, handleOpenLogin]
-  )
-
-  const isActiveRoute = useCallback(
-    (key: MenuKey) => {
-      return routePath.startsWith(key)
-    },
-    [routePath]
-  )
-
-  return (
-    <aside className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
-      {menuConfig.children.map((menu) => (
-        <MenuItem
-          commonClickPass={commonClickPass}
-          isActiveRoute={isActiveRoute}
-          key={menu.key}
-          menu={menu}
-        />
-      ))}
-    </aside>
-  )
 }
 
 type MenuProps = {
@@ -73,7 +31,7 @@ const defaultRequiredMenuProps: Pick<MenuProps, "icon" | "itemClassname"> = {
   itemClassname: "",
 }
 
-export const MenuItem = ({
+const MenuItem = ({
   menu: { key, children, label },
   commonClickPass,
   isActiveRoute,
@@ -128,7 +86,7 @@ export const MenuItem = ({
   return (
     <div className="text-lg cursor-pointer ml-4 mr-2 space-y-3" key={key}>
       <div
-        className={`flex justify-start w-fit hover:text-amber-500 hover:fill-amber-500 ${
+        className={`flex justify-start w-fit hover:text-amber-500 hover:fill-amber-500 dark:fill-[#fff]  ${
           isActiveRoute?.(key) ? "font-extrabold" : ""
         } ${itemClassname}`}
         data-testid="menu-item"
@@ -141,3 +99,5 @@ export const MenuItem = ({
     </div>
   )
 }
+
+export default MenuItem
