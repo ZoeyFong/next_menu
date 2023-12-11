@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Roboto_Mono } from "next/font/google"
+import AuthProvider from "./context/AuthContext"
 import "./globals.css"
 
 const mono = Roboto_Mono({
@@ -19,8 +20,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${mono.className} overflow-hidden bg-gray-100 dark:bg-gray-700`}>
-        {children}
+      <body
+        className={`${mono.className} overflow-hidden bg-gray-100 dark:bg-gray-700`}
+      >
+        <AuthProvider> {children}</AuthProvider>
       </body>
     </html>
   )

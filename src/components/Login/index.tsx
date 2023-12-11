@@ -1,21 +1,49 @@
 "use client"
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { debounce } from "@/utils/debounce"
+import { useAuthDispatch } from "@/app/context/AuthContext"
+import { FormEventHandler, useEffect, useState } from "react"
+import { submitAction } from "./actions"
 
-type Props = {
+const formFields = [
+  {
+    value: "username",
+    label: "Username",
+    type: "text",
+  },
+  {
+    value: "password",
+    label: "Password",
+    type: "password",
+  },
+]
+
+export default function Login({
+  handleCloseLogin,
+}: {
   handleCloseLogin: () => void
-  handleLoggedIn: (user: string) => void
-}
-
-export default function Login({ handleCloseLogin, handleLoggedIn }: Props) {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+}) {
   const [error, setError] = useState("")
-  const loginDisabled = !password || !username
+  const dispatchUser = useAuthDispatch()
 
-  const onSubmitForm = async (e: FormEvent) => {
+  const handleFormAction = (formData: FormData) => {
+    const { error: err } = submitAction(formData)
+    if (err) setError(err)
+    else {
+      handleCloseLogin()
+      dispatchUser({
+        type: "login",
+        data: {
+          user: formData.get("username") as string,
+        },
+      })
+    }
+  }
+
+  const onSubmitForm: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
+
+    const username = e.currentTarget.username.value
+    const password = e.currentTarget.password.value
 
     fetch("/api/login", {
       method: "POST",
@@ -27,18 +55,16 @@ export default function Login({ handleCloseLogin, handleLoggedIn }: Props) {
       .then((res) => res.json())
       .then((data) => {
         if (data.code !== 200) throw data.message
-        handleLoggedIn(username)
+        handleCloseLogin()
+        dispatchUser({
+          type: "login",
+          data: {
+            user: username,
+          },
+        })
       })
-      .catch((err) => setError(err))
+      .catch(setError)
   }
-
-  const onChangeFormUsername = debounce((e: ChangeEvent<HTMLInputElement>) =>
-    setUsername(e.target.value)
-  )
-
-  const onChangeFormPassword = debounce((e: ChangeEvent<HTMLInputElement>) =>
-    setPassword(e.target.value)
-  )
 
   useEffect(() => {
     const escLister = (e: KeyboardEvent) => {
@@ -50,26 +76,15 @@ export default function Login({ handleCloseLogin, handleLoggedIn }: Props) {
     }
   }, [handleCloseLogin])
 
-  const formFields = [
-    {
-      value: "username",
-      label: "Username",
-      onChange: onChangeFormUsername,
-      type: "text",
-    },
-    {
-      value: "password",
-      label: "Password",
-      onChange: onChangeFormPassword,
-      type: "password",
-    },
-  ]
-
   return (
-    <div className="z-2 absolute top-[20%] rounded-md shadow-md w-[90%] left-[5%] sm:w-[50%] sm:left-[25%] lg:w-[30%] lg:left-[35%] p-6 bg-slate-50 dark:bg-slate-800">
-      <form onSubmit={onSubmitForm} data-testid="login-form">
+    <div className="z-[1000] absolute top-[20%] rounded-md shadow-md w-[90%] left-[5%] sm:w-[50%] sm:left-[25%] lg:w-[30%] lg:left-[35%] p-6 bg-slate-50 dark:bg-slate-800">
+      <form
+        // onSubmit={onSubmitForm}
+        action={handleFormAction}
+        data-testid="login-form"
+      >
         <div className="space-y-6">
-          {formFields.map(({ value, label, onChange, type }) => (
+          {formFields.map(({ value, label, type }) => (
             <div className="space-y-3" key={value}>
               <label
                 htmlFor={value}
@@ -82,7 +97,7 @@ export default function Login({ handleCloseLogin, handleLoggedIn }: Props) {
                 placeholder={`Please enter your ${value}`}
                 type={type}
                 name={value}
-                onChange={onChange}
+                required
               />
             </div>
           ))}
@@ -92,7 +107,6 @@ export default function Login({ handleCloseLogin, handleLoggedIn }: Props) {
         <div className="mt-6 flex-col font-bold space-y-5 text-center">
           <button
             type="submit"
-            disabled={loginDisabled}
             className="w-full rounded-md px-8 py-2 border-[1px] bg-slate-800 dark:bg-slate-50 text-slate-50 dark:text-slate-800 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:dark:bg-slate-300"
           >
             Submit

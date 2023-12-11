@@ -10,7 +10,7 @@ describe("test sidebar", () => {
     const handleOpenLogin = () => {
       triggered = true
     }
-    render(<Sidebar loggedUser={null} handleOpenLogin={handleOpenLogin} />)
+    render(<Sidebar handleOpenLogin={handleOpenLogin} />)
 
     const menuItems = screen.getAllByTestId("menu-item")
     const len = menuItems.length

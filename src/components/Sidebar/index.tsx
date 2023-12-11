@@ -1,27 +1,32 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { MenuItem, type MenuKey } from "./MenuItem"
 import menuConfig from "@/app/menu.json"
-import MenuItem, { MenuKey } from "./MenuItem"
+import Mask from "../Mask"
+import dynamic from "next/dynamic"
+import Loading from "../Loading"
+import { useAuth } from "@/app/context/AuthContext"
 
-type SidebarProps = {
-  loggedUser: null | string
-  handleOpenLogin: () => void
-}
+const Login = dynamic(() => import("../Login"), {
+  loading: () => <Loading />,
+})
 
-export default function Sidebar({ loggedUser, handleOpenLogin }: SidebarProps) {
+export default function Sidebar() {
+  const user = useAuth()
+  const [openLogin, setOpenLogin] = useState(false)
   const [routePath, setRoutePath] = useState<string>("")
 
   const commonClickPass = useCallback(
     (key: MenuKey) => {
-      if (!loggedUser) {
-        handleOpenLogin()
+      if (!user) {
+        setOpenLogin(true)
         return false
       }
       setRoutePath(key)
       return true
     },
-    [loggedUser, handleOpenLogin]
+    [user]
   )
 
   const isActiveRoute = useCallback(
@@ -32,15 +37,24 @@ export default function Sidebar({ loggedUser, handleOpenLogin }: SidebarProps) {
   )
 
   return (
-    <aside className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
-      {menuConfig.children.map((menu) => (
-        <MenuItem
-          commonClickPass={commonClickPass}
-          isActiveRoute={isActiveRoute}
-          key={menu.key}
-          menu={menu}
-        />
-      ))}
-    </aside>
+    <>
+      {openLogin && (
+        <>
+          <Mask />
+          <Login handleCloseLogin={() => setOpenLogin(false)} />
+        </>
+      )}
+      <aside className="relative w-fit h-screen space-y-4 py-8 px-4 shadow-md">
+        {menuConfig.children.map((menu) => (
+          <MenuItem
+            handleCommonClick={commonClickPass}
+            isActiveRoute={isActiveRoute}
+            disabled={openLogin}
+            key={menu.key}
+            menu={menu}
+          />
+        ))}
+      </aside>
+    </>
   )
 }
