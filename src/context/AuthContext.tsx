@@ -36,6 +36,11 @@ export const useAuthDispatch = () => {
   return useAuthDispatch
 }
 
+export const useAuth = () => {
+  const auth = useContext(AuthContext)
+  return auth
+}
+
 const authReducer = (state: Auth, action: AuthDispatch) => {
   switch (action.type) {
     case "login":

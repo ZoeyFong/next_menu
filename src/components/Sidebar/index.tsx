@@ -6,7 +6,7 @@ import menuConfig from "@/app/menu.json"
 import Mask from "../Mask"
 import dynamic from "next/dynamic"
 import Loading from "../Loading"
-import { useAuth } from "@/app/context/AuthContext"
+import { useAuth } from "@/context/AuthContext"
 
 const Login = dynamic(() => import("../Login"), {
   loading: () => <Loading />,

@@ -4,14 +4,15 @@ import { useState } from "react"
 import Mask from "../Mask"
 import dynamic from "next/dynamic"
 import Loading from "../Loading"
-import { useAuth, useAuthDispatch } from "@/app/context/AuthContext"
+import { useAuth, useAuthDispatch } from "@/context/AuthContext"
 
 const Login = dynamic(() => import("../Login"), {
   loading: () => <Loading />,
 })
 
 export default function Nav() {
-  const user = useAuth()
+  const auth = useAuth()
+  const user = auth.username
   const [openLogin, setOpenLogin] = useState(false)
   const authDispatch = useAuthDispatch()
 

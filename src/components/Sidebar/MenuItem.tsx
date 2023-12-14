@@ -1,8 +1,7 @@
 "use client"
 
-import { ReactNode, forwardRef, useCallback, useEffect, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import ArrowRight from "public/images/arrow-right.svg"
-import { useAuth } from "@/app/context/AuthContext"
 
 export type MenuKey = string
 
@@ -46,7 +45,6 @@ export const MenuItem = ({
   ...props
 }: MenuProps) => {
   const [toggled, setToggled] = useState(!!defaultToggled)
-  const user = useAuth()
 
   const {
     icon = defaultRequiredMenuProps.icon,

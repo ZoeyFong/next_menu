@@ -1,8 +1,8 @@
 "use client"
 
-import { useAuthDispatch } from "@/app/context/AuthContext"
 import { useEffect, useState } from "react"
 import { submitAction } from "./actions"
+import { useAuthDispatch } from "@/context/AuthContext"
 
 const formFields = [
   {
@@ -32,8 +32,8 @@ export default function Login({
       handleCloseLogin()
       dispatchUser({
         type: "login",
-        data: {
-          user: formData.get("username") as string,
+        payload: {
+          username: formData.get("username") as string,
         },
       })
     }
