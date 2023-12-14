@@ -13,7 +13,7 @@ const mockData = [
   },
 ]
 
-export const submitAction = (formData: FormData) => {
+export const submitAction = async (formData: FormData) => {
   const schema = z.object({
     username: z.string().min(3).max(20),
     password: z.string().min(3).max(30),

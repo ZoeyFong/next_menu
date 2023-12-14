@@ -25,9 +25,9 @@ export default function Login({
   const [error, setError] = useState("")
   const dispatchUser = useAuthDispatch()
 
-  const handleFormAction = (formData: FormData) => {
-    const { error: err } = submitAction(formData)
-    if (err) setError(err)
+  const handleFormAction = async (formData: FormData) => {
+    const res = await submitAction(formData)
+    if (res.error) setError(res.error)
     else {
       handleCloseLogin()
       dispatchUser({
