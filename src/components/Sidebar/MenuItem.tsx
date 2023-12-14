@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, useState } from "react"
 import ArrowRight from "public/images/arrow-right.svg"
 
 export type MenuKey = string
@@ -51,13 +51,10 @@ export const MenuItem = ({
     itemClassname = defaultRequiredMenuProps.itemClassname,
   } = props
 
-  const handleClickMenu = useCallback(
-    (key: MenuKey) => {
-      const valid = handleCommonClick ? handleCommonClick(key, !toggled) : true
-      if (valid) setToggled((t) => !t)
-    },
-    [handleCommonClick, toggled]
-  )
+  const handleClickMenu = (key: MenuKey) => {
+    const valid = handleCommonClick ? handleCommonClick(key, !toggled) : true
+    if (valid) setToggled((t) => !t)
+  }
 
   const getPrefix = () => {
     return (

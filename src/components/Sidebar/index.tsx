@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { MenuItem, type MenuKey } from "./MenuItem"
 import menuConfig from "@/app/menu.json"
 import Mask from "../Mask"
@@ -13,28 +13,23 @@ const Login = dynamic(() => import("../Login"), {
 })
 
 export default function Sidebar() {
-  const user = useAuth()
+  const auth = useAuth()
+  const user = auth.username
   const [openLogin, setOpenLogin] = useState(false)
   const [routePath, setRoutePath] = useState<string>("")
 
-  const commonClickPass = useCallback(
-    (key: MenuKey) => {
-      if (!user) {
-        setOpenLogin(true)
-        return false
-      }
-      setRoutePath(key)
-      return true
-    },
-    [user]
-  )
+  const commonClickPass = (key: MenuKey) => {
+    if (!user) {
+      setOpenLogin(true)
+      return false
+    }
+    setRoutePath(key)
+    return true
+  }
 
-  const isActiveRoute = useCallback(
-    (key: MenuKey) => {
-      return routePath.startsWith(key)
-    },
-    [routePath]
-  )
+  const isActiveRoute = (key: MenuKey) => {
+    return routePath.startsWith(key)
+  }
 
   return (
     <>
