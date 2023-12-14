@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuthDispatch } from "@/app/context/AuthContext"
-import { FormEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { submitAction } from "./actions"
 
 const formFields = [
@@ -39,33 +39,6 @@ export default function Login({
     }
   }
 
-  const onSubmitForm: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault()
-
-    const username = e.currentTarget.username.value
-    const password = e.currentTarget.password.value
-
-    fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.code !== 200) throw data.message
-        handleCloseLogin()
-        dispatchUser({
-          type: "login",
-          data: {
-            user: username,
-          },
-        })
-      })
-      .catch(setError)
-  }
-
   useEffect(() => {
     const escLister = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleCloseLogin()
@@ -79,7 +52,7 @@ export default function Login({
   return (
     <div className="z-[1000] absolute top-[20%] rounded-md shadow-md w-[90%] left-[5%] sm:w-[50%] sm:left-[25%] lg:w-[30%] lg:left-[35%] p-6 bg-slate-50 dark:bg-slate-800">
       <form
-        // onSubmit={onSubmitForm}
+        // @ts-ignore
         action={handleFormAction}
         data-testid="login-form"
       >
